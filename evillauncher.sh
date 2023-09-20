@@ -8,7 +8,7 @@ config_folder=$path/config/
 usage='Evil Launcher Usage
 -h, --help             show this message
 ----------------------------------------
-$0 [modpack file] [doom root path]
+'$0' [modpack file] [doom root path]
 For a more detailed explanation, check `readme.md`
 '
 
