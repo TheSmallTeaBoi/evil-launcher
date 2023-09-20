@@ -5,6 +5,19 @@ wad_folder=$path/WADs/
 mod_folder=$path/mods/
 config_folder=$path/config/
 
+usage='Evil Launcher Usage
+-h, --help             show this message
+----------------------------------------
+$0 [modpack file] [doom root path]
+For a more detailed explanation, check `readme.md`
+'
+
+# Help
+if [ "$#" -ne 2 ] || [ $1 == '-h' ] || [ $1 == '--help' ]; then
+    echo "$usage"
+    exit 1
+fi
+
 # Read the .hell file passed as an argument
 read_file(){
 	echo "reading $1"
