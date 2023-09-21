@@ -1,6 +1,11 @@
 #!/bin/sh
 
-path="$2"
+if [ $2 ]; then
+	path="$2"
+else
+	path="$(dirname $1)/"	
+fi
+
 wad_folder=$path/WADs/
 mod_folder=$path/mods/
 config_folder=$path/config/
@@ -13,7 +18,7 @@ For a more detailed explanation, check `readme.md`
 '
 
 # Help
-if [ "$#" -ne 2 ] || [ $1 == '-h' ] || [ $1 == '--help' ]; then
+if [ "$#" -ne 1 ] || [ $1 == '-h' ] || [ $1 == '--help' ]; then
     echo "$usage"
     exit 1
 fi
@@ -64,6 +69,5 @@ get_wad $hellcat
 get_config $1
 get_mods $1
 
-#echo "running gzdoom -iwad $wad_folder/$wad -config $config_folder/$config_file" -file ${mod_array_with_path[@]}"
-
+#echo "running gzdoom -iwad $wad_folder/$wad -config "$config_folder/$config_file" -file ${mod_array_with_path[@]}" # For debugging purposes
 gzdoom -iwad "$wad_folder/$wad" -config "$config_folder/$config_file" -file "${mod_array_with_path[@]}"

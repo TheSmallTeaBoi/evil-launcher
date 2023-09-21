@@ -21,6 +21,7 @@ Usage of the script goes like this:
 ```
 evillauncher.sh [.hell file] [path to your doom root folder]
 ```
+if no [path] is given, it'll use the parent folder of the `.hell` file as the root. Useful for self-contained mod packs!
 
 To work, your directories should follow a specific folder structure.
 ```
