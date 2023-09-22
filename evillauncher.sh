@@ -55,7 +55,7 @@ get_config(){
 # Get the rest of the files (the mods :P)
 get_mods(){
 	echo "Getting the mod filepaths"
-	mods_string=$(cat $1 | sed -r 's/^[.*\[|.*{.*].*//')
+	mods_string=$(cat $1 | sed -r 's/^[.*\#|.*\[|.*{.*].*//')
 	mod_array=($mods_string)
 	echo "There are ${#mod_array[@]} mods"
 	for key in "${!mod_array[@]}"

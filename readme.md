@@ -15,6 +15,7 @@ All your
 mods ordered
 in whatever
 way you want
+# You can also make comments!
 ```
 
 Usage of the script goes like this:
