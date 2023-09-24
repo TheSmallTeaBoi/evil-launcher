@@ -18,14 +18,14 @@ For a more detailed explanation, check `readme.md`
 '
 
 # Help
-if [ "$#" -ne 1 ] || [ $1 == '-h' ] || [ $1 == '--help' ]; then
+if [[ "$#" -ne 1 ]] || [[ $1 == '-h' ]] || [[ $1 == '--help' ]]; then
     echo "$usage"
     exit 1
 fi
 
 # Read the .hell file passed as an argument
 read_file(){
-	echo "reading $1"
+	echo "Reading $1"
 	hellcat=$(cat $1)
 }
 
@@ -40,9 +40,9 @@ get_wad(){
 # Get the config file name (or make one if it doesn't exist)
 get_config(){
 	echo "Getting config file"
-	config_path=$(echo $hellcat | sed 's/.*\{(.*?)\}.*/\1/' -r)
-	if echo "$config_path" | grep -E -q '.*\.config'; then
-		echo "$config_path exists, using it"
+	config_path="$(echo ${hellcat} | sed 's/.*\{(.*?)\}.*/\1/' -r)"
+	if echo "${config_path}" | grep -E -q '.*\.config'; then
+		echo "{$config_path} is specificied, using it"
 		config_file="$config_path"
 	else
 		echo "Config file not specified, making base64 hash"
@@ -57,9 +57,10 @@ get_mods(){
 	echo "Getting the mod filepaths"
 	mods_string=$(cat $1 | sed -r 's/^[.*\#|.*\[|.*{.*].*//')
 	mod_array=($mods_string)
-	echo "There are ${#mod_array[@]} mods"
+	echo "There are ${#mod_array[@]} mods:"
 	for key in "${!mod_array[@]}"
 	do 
+		echo "    ${mod_array[key]}"
 		mod_array_with_path[key]="$mod_folder/${mod_array[key]}"
 	done
 }
@@ -70,4 +71,5 @@ get_config $1
 get_mods $1
 
 #echo "running gzdoom -iwad $wad_folder/$wad -config "$config_folder/$config_file" -file ${mod_array_with_path[@]}" # For debugging purposes
-gzdoom -iwad "$wad_folder/$wad" -config "$config_folder/$config_file" -file "${mod_array_with_path[@]}"
+echo -ne "Running gzdoom\n\n"
+gzdoom -iwad "${wad_folder:?}/$wad" -config "${config_folder:?}/$config_file" -file "${mod_array_with_path[@]}"
