@@ -3,6 +3,22 @@ from re import split, findall
 from os import path
 from subprocess import Popen
 
+dryRun = False
+help = """
+Please provide a hell file
+
+Options
+=======
+--dry    Dry Run
+"""
+
+if len(argv) < 2:
+    print(help)
+    exit()
+elif len(argv) > 2:
+    if argv[2] == "--dry":
+        dryRun = True
+
 
 def readFile(file):
     with open(file, "r") as f:
@@ -19,6 +35,8 @@ def sanitize(filter, dirtyList):
 def clean(filter, string):
     for token in filter:
         string = string.replace(token, "")
+    string = string.replace("./", "")
+    print(string)
     return string
 
 
@@ -74,11 +92,12 @@ def main():
     )
 
     print(
-        f"""The command will be run as
+        f"""The command {"would" if dryRun else "will"} be run as
         `{command}`
         """
     )
-    Popen(command, shell=True)
+    if not dryRun:
+        Popen(command, shell=True)
 
 
 main()
