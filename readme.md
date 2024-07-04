@@ -4,7 +4,17 @@
 Evil launcher is a CLI launcher for classic doom mod packs
 
 
+
+
 ## Usage
+
+Usage of the script goes like this:
+
+```
+evil [.hell file]
+```
+
+## Format Definition
 
 The `.hell` files should be formatted like this:
 
@@ -17,13 +27,4 @@ in whatever
 way you want
 # You can also make comments!
 ```
-
-Usage of the script goes like this:
-
-```
-evil [.hell file]
-```
-
-if no [path] is given, it'll use the parent folder of the `.hell` file as the root. Useful for self-contained mod packs!
-
-if you wanted to use subfolders to organize your mods, you'll have to add the relative path from `root` in the `.hell` file
+All files you reference in it, have to have relative paths to the `.hell` file.
