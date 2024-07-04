@@ -10,7 +10,7 @@
 
   # https://devenv.sh/tests/
   enterTest = ''
-    python main.py
+    python evil freereelism.hell
   '';
 
   # https://devenv.sh/languages/
