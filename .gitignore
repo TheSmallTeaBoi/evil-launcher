@@ -11,5 +11,4 @@ devenv.local.nix
 # pre-commit
 .pre-commit-config.yaml
 
-*.hell
 gzdoom-crash.log

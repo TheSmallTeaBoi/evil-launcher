@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+
+from sys import argv
+from re import split, findall
+from subprocess import Popen
+
+from modules import hellparser
+from modules.fetcher import Fetcher
+
+dryRun = False
+help = """
+Please provide a hell file
+
+Options
+=======
+--dry    Dry Run
+"""
+
+if len(argv) < 2:
+    print(help)
+    exit()
+elif len(argv) > 2:
+    if argv[2] == "--dry":
+        dryRun = True
+
+
+def flatten(xss):
+    return [x for xs in xss for x in xs]
+
+
+def main():
+
+    file = hellparser.readFile(argv[1])
+    cleanFile = hellparser.clean("[]{}", file)
+    filePath = hellparser.getFilepath(argv[1])
+    lines = split("\n", file)
+    cleanLines = split("\n", cleanFile)
+
+    Fetcher("", "").fetchMissing(cleanLines, filePath)
+
+    # Comments is a cleaned, flattened list of every comment
+    comments = flatten(hellparser.sanitize([], hellparser.getComments(lines)))
+
+    # Clean the strings
+    lines = hellparser.flatASS(lines)
+    file = "\n".join(lines)
+
+    # Find wad and config file
+    wad = findall(r"\[.*\]", file)[0]
+    config = findall(r"\{.*\}", file)
+    if config:
+        config = config[0]
+        print(config)
+
+    mods = hellparser.getMods([wad, config] + comments, lines, filePath)
+
+    # Clean from `[]` and `{}`
+    wad = hellparser.clean("[]", wad)
+
+    if config:
+        config = hellparser.clean("{}", config)
+        configCommand = f' -config "{filePath}/{config}"'
+    else:
+        configCommand = ""
+
+    print(f"The hell file is at `{filePath}`")
+    print(f"The wad is `./{wad}`")
+    print(f"The config file is `./{config}`")
+    # print(f"The mods are `{mods}`")
+
+    if mods:
+        modCommand = f" -file {mods}"
+    else:
+        modCommand = ""
+
+    command = f'gzdoom -iwad "{filePath}/{wad}"{configCommand}{modCommand}'
+
+    print(
+        f"""The command {"would" if dryRun else "will"} be run as
+        `{command}`
+        """
+    )
+    if not dryRun:
+        Popen(command, shell=True)
+
+
+main()

@@ -1,0 +1,9 @@
+[project]
+name = "evil-launcher"
+description = "The most evil launcher ever conceived"
+version = "0.2"
+
+
+[tool.pyright]
+extraPaths = ["modules"]
+
