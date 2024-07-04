@@ -3,7 +3,7 @@
   env.GREET = "devenv";
 
   # https://devenv.sh/packages/
-  packages = [pkgs.gzdoom];
+  packages = with pkgs; [gzdoom unar];
 
   enterShell = ''
   '';

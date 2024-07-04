@@ -2,7 +2,7 @@
 
 from sys import argv
 from re import split, findall
-from subprocess import Popen
+from subprocess import check_output
 
 from modules import hellparser
 from modules.fetcher import Fetcher
@@ -36,7 +36,7 @@ def main():
     lines = split("\n", file)
     cleanLines = split("\n", cleanFile)
 
-    Fetcher("", "").fetchMissing(cleanLines, filePath)
+    Fetcher().fetchMissing(cleanLines, filePath)
 
     # Comments is a cleaned, flattened list of every comment
     comments = flatten(hellparser.sanitize([], hellparser.getComments(lines)))
@@ -50,15 +50,15 @@ def main():
     config = findall(r"\{.*\}", file)
     if config:
         config = config[0]
-        print(config)
 
     mods = hellparser.getMods([wad, config] + comments, lines, filePath)
+    mods = hellparser.clean("%", mods)
 
     # Clean from `[]` and `{}`
-    wad = hellparser.clean("[]", wad)
+    wad = hellparser.clean("[]%", wad)
 
     if config:
-        config = hellparser.clean("{}", config)
+        config = hellparser.clean("{}%", config)
         configCommand = f' -config "{filePath}/{config}"'
     else:
         configCommand = ""
@@ -81,7 +81,7 @@ def main():
         """
     )
     if not dryRun:
-        Popen(command, shell=True)
+        check_output(command, shell=True)
 
 
 main()

@@ -62,7 +62,7 @@ def getMods(filter, dirtyList, filePath):
 
 
 def getFilepath(file):
-    osPath = path.dirname(file)
+    osPath = path.dirname(path.abspath(file))
     if osPath == "" or osPath == ".":
         osPath = "./"
     return osPath
