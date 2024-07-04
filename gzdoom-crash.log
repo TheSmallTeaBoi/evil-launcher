@@ -1,0 +1,11 @@
+*** Fatal Error ***
+Segmentation fault (signal 11)
+Address: (nil)
+
+
+GZDoom version <unknown version> (0)
+Command line: /nix/store/bxbax21rmbjv1fjpj54halig83rcdw4d-gzdoom-4.11.3/share/games/doom/gzdoom -iwad /home/theo/Rattus/Doom./WADs/DOOM2.WAD -config /home/theo/Rattus/Doom./Configs/generic.cfg -file /home/theo/Rattus/Doom./Mods/brutalv21.pk3 /home/theo/Rattus/Doom./Mods/Compendium-v1a.pk3
+
+Not in a level.
+
+Executing: gdb --quiet --batch --command=gdb-respfile-OEfiF1
