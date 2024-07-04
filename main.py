@@ -1,0 +1,2 @@
+def readFile(file):
+    return
