@@ -1,7 +1,8 @@
+import hashlib
 from os import path
-from subprocess import call, check_call, check_output
+from subprocess import call, check_call
+from hashlib import sha256
 
-# from urllib.request import urlretrieve
 from re import search, split
 from string import ascii_uppercase, digits
 from random import choices
@@ -18,30 +19,39 @@ class Fetcher:
         print(f"Making folder {filePath}/")
         call(f"mkdir -p {filePath}/", shell=True)
         print(f"Downloading {self.file}")
-        check_call(f"wget -O '{self.file}' '{self.url}'", shell=True)
-        # urlretrieve(self.url, self.file)
+        check_call(f"wget -c -O '{self.file}' '{self.url}'", shell=True)
 
-    def fetchAndExtract(self, link, outPath):
-        # generate 64-character long filename for temp file
-        funnyName = "/tmp/" + "".join(choices(ascii_uppercase + digits, k=64))
+    def fetchAndExtract(self, link, outPath, keepTemp=False):
+        # generate change for temp file name
+        funnyName = "/tmp/" + sha256(link.encode("utf-8")).hexdigest()
 
-        Fetcher(link, f"{funnyName}").fetch()
+        Fetcher(link, funnyName).fetch()
 
         splitDir = split(r"%%.*%%", outPath)
-        outPath = search(r"%%(.*)%%", outPath).group(1)
-        print(f"unar -D -o {splitDir[0]}{outPath} {funnyName}")
-        check_output(f"unar -D -o {splitDir[0]}{outPath} {funnyName}", shell=True)
+        outPath = splitDir[0] + search(r"%%(.*)%%", outPath).group(1)
+        check_call(f"unar -D -o {outPath} {funnyName}", shell=True)
+        if not keepTemp:
+            print(f"Deleting temp file `{funnyName}`")
+            call(f"rm {funnyName}", shell=True)
 
-    def fetchMissing(self, cleanLine, outPath):
+    def fetchMissing(self, cleanLine, outPath, keepTemp=False, dryRun=False):
+        cleanLine = hellparser.sanitize("", cleanLine)
         for line in cleanLine:
             if " as " in line:
                 line = line.split(" as ")
                 filePath = f"{outPath}/{line[1]}"
-                if not path.isfile(hellparser.clean("%", filePath)):
+                if dryRun:
+                    print(f"Found {line[0]}, which would be downloaded to {filePath}")
+                elif not path.isfile(hellparser.clean("%", filePath)):
                     if search(r"%%.*%%", filePath):
-                        Fetcher().fetchAndExtract(line[0], f"{outPath}/{line[1]}")
+                        Fetcher().fetchAndExtract(
+                            line[0], f"{outPath}/{line[1]}", keepTemp
+                        )
                     else:
                         print(f"No match: {line[0]}{line[1]}")
                         Fetcher(line[0], filePath).fetch()
                 cleanLine[cleanLine.index(f"{line[0]} as {line[1]}")] = line[1]
+            else:
+                if dryRun:
+                    print(f"Found {line}")
         return cleanLine
