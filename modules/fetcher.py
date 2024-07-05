@@ -1,6 +1,7 @@
 from os import path
-from subprocess import call, check_output
-from urllib.request import urlretrieve
+from subprocess import call, check_call, check_output
+
+# from urllib.request import urlretrieve
 from re import search, split
 from string import ascii_uppercase, digits
 from random import choices
@@ -17,7 +18,8 @@ class Fetcher:
         print(f"Making folder {filePath}/")
         call(f"mkdir -p {filePath}/", shell=True)
         print(f"Downloading {self.file}")
-        urlretrieve(self.url, self.file)
+        check_call(f"wget -O '{self.file}' '{self.url}'", shell=True)
+        # urlretrieve(self.url, self.file)
 
     def fetchAndExtract(self, link, outPath):
         # generate 64-character long filename for temp file
