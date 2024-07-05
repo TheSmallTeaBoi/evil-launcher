@@ -13,4 +13,4 @@ devenv.local.nix
 
 output/**
 
-gzdoom-crash.log
+*.log

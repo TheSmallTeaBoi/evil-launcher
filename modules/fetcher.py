@@ -1,10 +1,11 @@
 import hashlib
 from os import path
 from subprocess import call, check_call
-import hashlib
 
 from re import search, split
+import logging
 from modules import hellparser
+from modules.execute import execute
 
 
 class Fetcher:
@@ -25,23 +26,23 @@ class Fetcher:
                 if not data:
                     break
 
-        print(f"Got: {algo.hexdigest()}")
-        print(f"Expected: {checksum}")
         if checksum == algo.hexdigest():
-            print("Checksums match.")
+            logging.info("Checksums match.")
             return True
         else:
-            print("Checksums don't match.")
-            return False
+            logging.error("Checksums don't match. Exiting.")
+            logging.error(f"Got: {algo.hexdigest()}")
+            logging.error(f"Expected: {checksum}")
+            exit()
 
     def fetch(self, file, url, checksum="", algo=""):
         filePath = path.dirname(file)
-        print(f"Making folder {filePath}/")
-        call(f"mkdir -p {filePath}/", shell=True)
-        print(f"Downloading {file}")
-        check_call(f"wget -c -O '{file}' '{url}'", shell=True)
+        logging.info(f"Making folder {filePath}/")
+        execute(f"mkdir -p {filePath}/")
+        logging.info(f"Downloading {file}")
+        execute(f"wget -c -O '{file}' '{url}'")
         if checksum:
-            print("Checking checksum")
+            logging.info("Checking checksum")
             self.checkSum(file, checksum, algo)
 
     def fetchAndExtract(self, link, outPath, removeTemp=False, checksum="", algo=""):
@@ -52,10 +53,10 @@ class Fetcher:
 
         splitDir = split(r"%%.*%%", outPath)
         outPath = splitDir[0] + search(r"%%(.*)%%", outPath).group(1)
-        check_call(f"unar -D -o {outPath} {funnyName}", shell=True)
+        execute(f"unar -D -o {outPath} {funnyName}")
         if removeTemp:
-            print(f"Deleting temp file `{funnyName}`")
-            call(f"rm {funnyName}", shell=True)
+            logging.warn(f"Deleting temp file `{funnyName}`")
+            execute(f"rm {funnyName}")
 
     def fetchMissing(self, cleanLine, outPath, removeTemp=False, dryRun=False):
         checksum, algo = "", ""
@@ -70,7 +71,9 @@ class Fetcher:
                 line = line.split(" as ")
                 filePath = f"{outPath}/{line[1]}"
                 if dryRun:
-                    print(f"Found {line[0]}, which would be downloaded to {filePath}")
+                    logging.info(
+                        f"Found {line[0]}, which would be downloaded to {filePath}"
+                    )
                 elif not path.isfile(hellparser.clean("%", filePath)):
                     if search(r"%%.*%%", filePath):
                         self.fetchAndExtract(
@@ -81,5 +84,5 @@ class Fetcher:
                             algo=algo,
                         )
                     else:
-                        print(f"No match: {line[0]}{line[1]}")
+                        logging.info(f"No match: {line[0]}{line[1]}")
                         self.fetch(line[0], filePath, checksum, algo)

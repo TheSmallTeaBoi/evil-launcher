@@ -2,47 +2,14 @@
 
 from re import split, findall
 from subprocess import check_output
-from argparse import ArgumentParser, FileType
+from argparse import ArgumentParser, FileType, REMAINDER
 from random import choice
+from sys import argv
+import logging
 
 from modules import hellparser
 from modules.fetcher import Fetcher
-
-quitMessage = [
-    "Please don't leave, there's more demons to toast!",
-    "Let's beat it -- This is turning into a bloodbath!",
-    "You're trying to say you like DOS better than me, right?",
-    "I wouldn't leave if I were you. DOS is much worse.",
-]
-
-with open("version.txt") as f:
-    version = f.read()
-
-argParser = ArgumentParser(
-    prog="evil-launcher",
-    description="The most evil launcher ever conceived",
-    epilog=choice(quitMessage),
-)
-argParser.add_argument(
-    "filename", action="store", type=FileType("r"), help="Path to hell file"
-)
-argParser.add_argument(
-    "--dry-run", action="store_true", help="Don't do anything, only display"
-)
-argParser.add_argument(
-    "--remove-temp",
-    action="store_true",
-    help="Remove downloaded temporary files, possibly unsafe.",
-)
-argParser.add_argument(
-    "-v",
-    "--version",
-    action="version",
-    help="Display version and exit",
-    version=f"Evil v{version}",
-)
-
-arguments = argParser.parse_args()
+from modules.execute import execute
 
 
 def readArgumentFile(file):
@@ -51,15 +18,81 @@ def readArgumentFile(file):
     return textfile
 
 
-arguments.filetext = readArgumentFile(arguments.filename)
-
-
 # Pattern matching magic
 def flatten(xss):
     return [x for xs in xss for x in xs]
 
 
 def main():
+
+    quitMessage = [
+        "Please don't leave, there's more demons to toast!",
+        "Let's beat it -- This is turning into a bloodbath!",
+        "You're trying to say you like DOS better than me, right?",
+        "I wouldn't leave if I were you. DOS is much worse.",
+    ]
+
+    with open("version.txt") as f:
+        version = f.read()
+
+    argParser = ArgumentParser(
+        prog=argv[0],
+        description="The most evil launcher ever conceived",
+        epilog=choice(quitMessage),
+        usage="%(prog)s [evil options] filename [options to pass to gzdoom]",
+    )
+    argParser.add_argument(
+        "filename", action="store", type=FileType("r"), help="Path to hell file"
+    )
+    argParser.add_argument(
+        "--dry-run", action="store_true", help="Don't do anything, only display"
+    )
+    argParser.add_argument(
+        "--remove-temp",
+        action="store_true",
+        help="Remove downloaded temporary files, possibly unsafe.",
+    )
+    argParser.add_argument(
+        "-v",
+        "--version",
+        action="version",
+        help="Display version and exit",
+        version=f"Evil v{version}",
+    )
+    argParser.add_argument("extraFlags", nargs=REMAINDER)
+
+    loggingArg = argParser.add_mutually_exclusive_group()
+    loggingArg.add_argument(
+        "--log", action="store_true", help="Write log file (evil.log)"
+    )
+    loggingArg.add_argument(
+        "-V", "--verbose", action="store_true", help="Write log file (evil.log)"
+    )
+
+    arguments = argParser.parse_args()
+
+    arguments.filetext = readArgumentFile(arguments.filename)
+
+    ## Logging
+    if arguments.log:
+        logging.basicConfig(
+            format="[%(levelname)s] :: %(message)s",
+            filename="evil.log",
+            filemode="w",
+            level=logging.DEBUG,
+        )
+    elif arguments.verbose:
+        logging.basicConfig(
+            format="[%(levelname)s] :: %(message)s",
+            level=logging.DEBUG,
+        )
+    else:
+        logging.basicConfig(
+            format="[%(levelname)s] :: %(message)s",
+            level=logging.WARN,
+        )
+
+    logging.info(f"The command was: `{' '.join(argv)}`")
 
     file = arguments.filetext
     cleanFile = hellparser.clean("[]{}", file)
@@ -96,23 +129,26 @@ def main():
     else:
         configCommand = ""
 
-    print(f"The hell file is at `{filePath}`")
-    print(f"The wad is `./{wad}`")
-    print(f"The config file is `./{config}`")
-    # print(f"The mods are `{mods}`")
+    logging.info(f"The hell file is at `{filePath}`")
+    logging.info(f"The wad is `./{wad}`")
+    logging.info(f"The config file is `./{config}`")
+    logging.info(f"The mods are `{mods}`")
 
     if mods:
         modCommand = f" -file {mods}"
     else:
         modCommand = ""
 
-    command = f'gzdoom -iwad "{filePath}/{wad}"{configCommand}{modCommand}'
+    extraFlags = " " + " ".join(arguments.extraFlags)
 
-    print(
+    command = f'gzdoom -iwad "{filePath}/{wad}"{configCommand}{modCommand}{extraFlags}'
+
+    logging.info(
         f"""The command {"would" if arguments.dry_run else "will"} be run as
         `{command}`
         """
     )
+
     if not arguments.dry_run:
         check_output(command, shell=True)
 
