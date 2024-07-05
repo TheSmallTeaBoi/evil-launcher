@@ -38,11 +38,14 @@ www.examplezip.com as /output/mods/%%examplezip%%/mod.pk3
 -- existant folder
 
 -- You can also check hashes on downloads
-www.totallysafe.com as /output/mods/%%notavirus/virus.pk3 with sha256 9c2f6a794acac9d5cbc2ebcd456ab6d0d6f452c97765fe315b10a9347a021adf
+www.totallysafe.com as /output/mods/%%notavirus%%/virus.pk3 with sha256 9c2f6a794acac9d5cbc2ebcd456ab6d0d6f452c97765fe315b10a9347a021adf
 
 All your
 mods ordered
 in whatever
 way you want
 ```
+
+The hashes currently implemented are `sha256`, `md5` and `sha1`.
+
 All files you reference in it, have to have relative paths to the `.hell` file.

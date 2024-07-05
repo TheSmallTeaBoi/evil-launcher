@@ -11,7 +11,11 @@ class Fetcher:
     def __init__(self, url="", file=""):
         self.url = url
         self.file = file
-        self.checksumAlgos = {"sha256": hashlib.sha256, "md5": hashlib.md5}
+        self.checksumAlgos = {
+            "sha256": hashlib.sha256,
+            "md5": hashlib.md5,
+            "sha1": hashlib.sha1,
+        }
 
     def checkSum(self, file, checksum, algorithm):
         algo = self.checksumAlgos[algorithm]()

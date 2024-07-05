@@ -23,10 +23,24 @@ argParser = ArgumentParser(
     description="The most evil launcher ever conceived",
     epilog=choice(quitMessage),
 )
-argParser.add_argument("filename", action="store", type=FileType("r"))
-argParser.add_argument("--dry-run", action="store_true")
-argParser.add_argument("--remove-temp", action="store_true")
-argParser.add_argument("-v", "--version", action="store_true")
+argParser.add_argument(
+    "filename", action="store", type=FileType("r"), help="Path to hell file"
+)
+argParser.add_argument(
+    "--dry-run", action="store_true", help="Don't do anything, only display"
+)
+argParser.add_argument(
+    "--remove-temp",
+    action="store_true",
+    help="Remove downloaded temporary files, possibly unsafe.",
+)
+argParser.add_argument(
+    "-v",
+    "--version",
+    action="version",
+    help="Display version and exit",
+    version=f"Evil v{version}",
+)
 
 arguments = argParser.parse_args()
 
@@ -43,11 +57,6 @@ arguments.filetext = readArgumentFile(arguments.filename)
 # Pattern matching magic
 def flatten(xss):
     return [x for xs in xss for x in xs]
-
-
-if arguments.version:
-    print(f"Evil v{version}")
-    exit()
 
 
 def main():
