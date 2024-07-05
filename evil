@@ -25,7 +25,7 @@ argParser = ArgumentParser(
 )
 argParser.add_argument("filename", action="store", type=FileType("r"))
 argParser.add_argument("--dry-run", action="store_true")
-argParser.add_argument("--keep-temp", action="store_true")
+argParser.add_argument("--remove-temp", action="store_true")
 argParser.add_argument("-v", "--version", action="store_true")
 
 arguments = argParser.parse_args()
@@ -59,7 +59,7 @@ def main():
     cleanLines = split("\n", cleanFile)
 
     Fetcher().fetchMissing(
-        cleanLines, filePath, dryRun=arguments.dry_run, keepTemp=arguments.keep_temp
+        cleanLines, filePath, dryRun=arguments.dry_run, removeTemp=arguments.remove_temp
     )
 
     # Comments is a cleaned, flattened list of every comment

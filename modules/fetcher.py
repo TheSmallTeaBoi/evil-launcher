@@ -21,7 +21,7 @@ class Fetcher:
         print(f"Downloading {self.file}")
         check_call(f"wget -c -O '{self.file}' '{self.url}'", shell=True)
 
-    def fetchAndExtract(self, link, outPath, keepTemp=False):
+    def fetchAndExtract(self, link, outPath, removeTemp=False):
         # generate change for temp file name
         funnyName = "/tmp/" + sha256(link.encode("utf-8")).hexdigest()
 
@@ -30,11 +30,11 @@ class Fetcher:
         splitDir = split(r"%%.*%%", outPath)
         outPath = splitDir[0] + search(r"%%(.*)%%", outPath).group(1)
         check_call(f"unar -D -o {outPath} {funnyName}", shell=True)
-        if not keepTemp:
+        if removeTemp:
             print(f"Deleting temp file `{funnyName}`")
             call(f"rm {funnyName}", shell=True)
 
-    def fetchMissing(self, cleanLine, outPath, keepTemp=False, dryRun=False):
+    def fetchMissing(self, cleanLine, outPath, removeTemp=False, dryRun=False):
         cleanLine = hellparser.sanitize("", cleanLine)
         for line in cleanLine:
             if " as " in line:
@@ -45,7 +45,7 @@ class Fetcher:
                 elif not path.isfile(hellparser.clean("%", filePath)):
                     if search(r"%%.*%%", filePath):
                         Fetcher().fetchAndExtract(
-                            line[0], f"{outPath}/{line[1]}", keepTemp
+                            line[0], f"{outPath}/{line[1]}", removeTemp
                         )
                     else:
                         print(f"No match: {line[0]}{line[1]}")
