@@ -18,7 +18,7 @@ def flatASS(lines):
     newLines = []
     for line in lines:
         newLine = line
-        if " as " in line:
+        if " as " in line or " with " in line:
             newLine = parseURL(line)
         newLines.append(newLine)
     return newLines
@@ -32,7 +32,14 @@ def parseURL(line):
     if line[0] == "{":
         lineType = "config"
 
-    line = split(" as ", line)[1]
+    if " as " in line:
+        line = split(" as ", line)[1]
+    if " with " in line:
+        line = split(" with ", line)[0]
+        if lineType == "wad":
+            line += "]"
+        if lineType == "config":
+            line += "}"
 
     line = lineDict[lineType] + split(" as ", line)[0]
     return line

@@ -37,6 +37,9 @@ www.examplezip.com as /output/mods/%%examplezip%%/mod.pk3
 -- Here, %%this%% means "extract to this folder", which can be new or an
 -- existant folder
 
+-- You can also check hashes on downloads
+www.totallysafe.com as /output/mods/%%notavirus/virus.pk3 with sha256 9c2f6a794acac9d5cbc2ebcd456ab6d0d6f452c97765fe315b10a9347a021adf
+
 All your
 mods ordered
 in whatever
