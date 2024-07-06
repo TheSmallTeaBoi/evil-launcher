@@ -1,8 +1,7 @@
 import hashlib
 from os import path
-from subprocess import call, check_call
 
-from re import search, split
+from re import search, split, compile
 import logging
 from modules import hellparser
 from modules.execute import execute
@@ -19,7 +18,12 @@ class Fetcher:
         }
 
     def checkSum(self, file, checksum, algorithm):
-        algo = self.checksumAlgos[algorithm]()
+        if algorithm in self.checksumAlgos:
+            algo = self.checksumAlgos[algorithm]()
+        else:
+            logging.error(f"Invalid algorithm name: {algorithm}. Removing file")
+            execute(f"rm {file}")
+            exit()
         with open(file, "rb") as f:
             while True:
                 data = f.read(65536)
@@ -30,9 +34,10 @@ class Fetcher:
             logging.info("Checksums match.")
             return True
         else:
-            logging.error("Checksums don't match. Exiting.")
+            logging.error("Checksums don't match. Removing file.")
             logging.error(f"Got: {algo.hexdigest()}")
             logging.error(f"Expected: {checksum}")
+            execute(f"rm {file}")
             exit()
 
     def fetch(self, file, url, checksum="", algo=""):
@@ -60,29 +65,47 @@ class Fetcher:
 
     def fetchMissing(self, cleanLine, outPath, removeTemp=False, dryRun=False):
         checksum, algo = "", ""
+        lineNum = 0
+        print(cleanLine)
         for line in cleanLine:
-            if " with " in line:
+            lineNum += 1
+            logging.debug(f"fetchMissing: {lineNum}. {line}")
+
+            # Check if line is a comment
+            if search("^--", line):
+                pass
+
+            # Check if there's a properly formed `with` statement
+            if search(" with .+", line):
                 checklist = line.split(" with ")[1].split(" ")
                 algo = checklist[0]
                 checksum = checklist[1]
                 line = line.split(" with ")[0]
+            elif " with " in line or " with" in line:
+                logging.error(f"Syntax error at line {lineNum} (with what?)")
+                exit()
 
-            if " as " in line:
+            # Check if there's a properly formed `as` statement
+            if search(" as .+", line):
                 line = line.split(" as ")
+                url = line[0]
                 filePath = f"{outPath}/{line[1]}"
                 if dryRun:
                     logging.info(
-                        f"Found {line[0]}, which would be downloaded to {filePath}"
+                        f"Found {url}, which would be downloaded to {filePath}"
                     )
                 elif not path.isfile(hellparser.clean("%", filePath)):
                     if search(r"%%.*%%", filePath):
                         self.fetchAndExtract(
-                            line[0],
-                            f"{outPath}/{line[1]}",
+                            link=url,
+                            outPath=filePath,
                             removeTemp=removeTemp,
                             checksum=checksum,
                             algo=algo,
                         )
                     else:
                         logging.info(f"No match: {line[0]}{line[1]}")
-                        self.fetch(line[0], filePath, checksum, algo)
+                        self.fetch(url=url, file=filePath, checksum=checksum, algo=algo)
+            elif " as " in line or " as" in line:
+                logging.error(f"Syntax error at line {lineNum} (as what?)")
+                exit()

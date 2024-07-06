@@ -21,5 +21,6 @@ def execute(system_command, **kwargs):
     popen.stdout.close()
     return_code = popen.wait()
     if return_code:
-        logging.warn(f"`{system_command}` exited with code {return_code}")
-        raise subprocess.CalledProcessError(return_code, system_command)
+        logging.error(f"`{system_command}` exited with code {return_code}")
+        exit()
+        # raise subprocess.CalledProcessError(return_code, system_command)

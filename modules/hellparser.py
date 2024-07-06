@@ -1,5 +1,5 @@
 from os import path
-from re import findall, split
+from re import findall, search, split
 
 
 def readFile(file):
@@ -54,9 +54,7 @@ def clean(filter, string):
 
 def getMods(filter, dirtyList, filePath):
     cleanMods = []
-
-    for item in filter:
-        mods = sanitize(item, dirtyList)
+    mods = []
 
     for mod in dirtyList:
         mod = mod.replace("./", "")
@@ -78,7 +76,8 @@ def getFilepath(file):
 def getComments(lines):
     comments = []
     for line in lines:
-        comments.append(findall(r"\A--.*", line))
+        if search("^--", line):
+            comments.append(line)
     return comments
 
 

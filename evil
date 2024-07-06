@@ -100,12 +100,21 @@ def main():
     lines = split("\n", file)
     cleanLines = split("\n", cleanFile)
 
-    Fetcher().fetchMissing(
-        cleanLines, filePath, dryRun=arguments.dry_run, removeTemp=arguments.remove_temp
-    )
+    comments = hellparser.getComments(lines)
+    noComments = cleanLines
+    for comment in comments:
+        for line in cleanLines:
+            if line == comment:
+                noComments.remove(line)
 
-    # Comments is a cleaned, flattened list of every comment
-    comments = flatten(hellparser.sanitize([], hellparser.getComments(lines)))
+    noComments = hellparser.sanitize(comments, noComments)
+
+    Fetcher().fetchMissing(
+        cleanLine=cleanLines,
+        outPath=filePath,
+        dryRun=arguments.dry_run,
+        removeTemp=arguments.remove_temp,
+    )
 
     # Clean the strings
     lines = hellparser.flatASS(lines)
@@ -116,11 +125,13 @@ def main():
     config = findall(r"\{.*\}", file)
     if config:
         config = config[0]
+    else:
+        config = ""
 
-    mods = hellparser.getMods([wad, config] + comments, lines, filePath)
+    mods = hellparser.getMods([wad, config], noComments, filePath)
     mods = hellparser.clean("%", mods)
 
-    # Clean from `[]` and `{}`
+    # Clean from `[]` and `%`
     wad = hellparser.clean("[]%", wad)
 
     if config:
@@ -129,10 +140,23 @@ def main():
     else:
         configCommand = ""
 
-    logging.info(f"The hell file is at `{filePath}`")
-    logging.info(f"The wad is `./{wad}`")
-    logging.info(f"The config file is `./{config}`")
-    logging.info(f"The mods are `{mods}`")
+    logging.info(
+        "The hell file is at "
+        f"`{hellparser.getFilepath(arguments.filename.name)}"
+        f"/{arguments.filename.name}`"
+    )
+
+    if wad:
+        logging.info(f"The wad is `{wad}`")
+    else:
+        logging.error(f"WAD not found at {filePath}/{wad}, perhaps a malformed file?")
+        exit()
+
+    if config:
+        logging.info(f"The config file is `{config}`")
+
+    if mods:
+        logging.info(f"The mods are `{mods}`")
 
     if mods:
         modCommand = f" -file {mods}"
@@ -150,7 +174,7 @@ def main():
     )
 
     if not arguments.dry_run:
-        check_output(command, shell=True)
+        execute(command)
 
 
 main()
