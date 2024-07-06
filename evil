@@ -5,6 +5,7 @@ from subprocess import check_output
 from argparse import ArgumentParser, FileType, REMAINDER
 from random import choice
 from sys import argv
+from copy import copy
 import logging
 
 from modules import hellparser
@@ -101,7 +102,7 @@ def main():
     cleanLines = split("\n", cleanFile)
 
     comments = hellparser.getComments(lines)
-    noComments = cleanLines
+    noComments = copy(cleanLines)
     for comment in comments:
         for line in cleanLines:
             if line == comment:

@@ -66,7 +66,6 @@ class Fetcher:
     def fetchMissing(self, cleanLine, outPath, removeTemp=False, dryRun=False):
         checksum, algo = "", ""
         lineNum = 0
-        print(cleanLine)
         for line in cleanLine:
             lineNum += 1
             logging.debug(f"fetchMissing: {lineNum}. {line}")
