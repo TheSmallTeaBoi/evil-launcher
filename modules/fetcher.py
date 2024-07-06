@@ -72,7 +72,7 @@ class Fetcher:
 
             # Check if line is a comment
             if search("^--", line):
-                pass
+                continue
 
             # Check if there's a properly formed `with` statement
             if search(" with .+", line):
