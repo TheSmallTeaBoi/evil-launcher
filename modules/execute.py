@@ -15,7 +15,9 @@ def execute(system_command, **kwargs):
 
     command = shlex.split(system_command)
 
-    if os.name == "nt":
+    isWindows = os.name == "nt"
+
+    if isWindows:
         command = [command[0] + ".exe"] + command[1:]
 
     logging.info(f"Running command\n{command}")
@@ -31,7 +33,8 @@ def execute(system_command, **kwargs):
         logging.debug(stdout_line.strip())
 
     popen.stdout.close()
-    return_code = popen.wait()
-    if return_code:
-        logging.error(f"`{system_command}` exited with code {return_code}")
-        exit()
+    if not isWindows:
+        return_code = popen.wait()
+        if return_code:
+            logging.error(f"`{system_command}` exited with code {return_code}")
+            exit()
