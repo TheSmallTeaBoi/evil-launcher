@@ -23,4 +23,3 @@ def execute(system_command, **kwargs):
     if return_code:
         logging.error(f"`{system_command}` exited with code {return_code}")
         exit()
-        # raise subprocess.CalledProcessError(return_code, system_command)

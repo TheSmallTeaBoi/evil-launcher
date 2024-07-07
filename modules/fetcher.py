@@ -1,10 +1,13 @@
 import hashlib
 from os import path
 
-from re import search, split, compile, match, IGNORECASE
+from re import search, split
 import logging
+import shlex
+from subprocess import Popen
 from modules import hellparser
 from modules.execute import execute
+from pathlib import Path
 
 
 class Fetcher:
@@ -41,11 +44,13 @@ class Fetcher:
             exit()
 
     def checkURI(self, uri):
-        regex = compile(
-            r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)",
-            IGNORECASE,
-        )
-        return match(regex, uri) is not None
+        popen = Popen(shlex.split(f"wget -q --spider {uri}"), universal_newlines=True)
+        return_code = popen.wait()
+        if return_code != 0:
+            logging.error("Invalid URL or can't fetch:")
+            logging.error("    " + uri)
+            exit()
+        return True
 
     def fetch(self, file, url, checksum="", algo=""):
         filePath = path.dirname(file)
@@ -74,8 +79,28 @@ class Fetcher:
         checksum, algo = "", ""
         lineNum = 0
         for line in cleanLine:
+            print(line)
             lineNum += 1
             logging.debug(f"fetchMissing: {lineNum}. {line}")
+
+            hasASS = bool(search(" as .+", line))
+
+            ass = ""
+
+            if hasASS:
+                ass = line.split(" as ")[1]
+                ass = outPath + "/" + hellparser.clean("%", ass)
+
+            if ass:
+                isFile = Path(ass).is_file()
+            else:
+                isFile = False
+
+            print(line)
+            print(ass)
+
+            if isFile:
+                continue
 
             # Check if line is a comment
             if search("^--", line):
@@ -95,14 +120,13 @@ class Fetcher:
             if search(" as .+", line):
                 line = line.split(" as ")
                 url = line[0]
-                if not self.checkURI(url):
-                    logging.warn(f"Possibly not a URL: {url}")
+                self.checkURI(url)
                 filePath = f"{outPath}/{line[1]}"
                 if dryRun:
                     logging.info(
                         f"Found {url}, which would be downloaded to {filePath}"
                     )
-                elif not path.isfile(hellparser.clean("%", filePath)):
+                elif not isFile:
                     if search(r"%%.*%%", filePath):
                         self.fetchAndExtract(
                             link=url,
