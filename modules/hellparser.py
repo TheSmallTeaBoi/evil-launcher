@@ -45,7 +45,6 @@ def parseURL(line):
 def clean(filter, string):
     for token in filter:
         string = string.replace(token, "")
-    string = string.replace("./", "")
     return string
 
 
@@ -56,7 +55,6 @@ def getMods(filter, dirtyList):
         dirtyList = sanitize(item, dirtyList)
 
     for mod in dirtyList:
-        mod = mod.replace("./", "")
         cleanMods.append(mod)
 
     cleanMods = sanitize("", cleanMods)
@@ -65,8 +63,8 @@ def getMods(filter, dirtyList):
 
 def getFilepath(file):
     osPath = path.dirname(path.abspath(file))
-    if osPath == "" or osPath == ".":
-        osPath = "./"
+    if osPath == ".":
+        osPath = ""
     return osPath
 
 

@@ -82,24 +82,26 @@ class Fetcher:
             lineNum += 1
             logging.debug(f"fetchMissing: {lineNum}. {line}")
 
-            hasASS = bool(search(" as .+", line))
-
-            ass = ""
-
-            if hasASS:
-                ass = line.split(" as ")[1]
-                ass = outPath + "/" + hellparser.clean("%", ass)
-
-            if ass:
-                isFile = Path(ass).is_file()
-            else:
-                isFile = False
-
-            if isFile:
-                continue
-
             # Check if line is a comment
             if search("^--", line):
+                continue
+
+            newestLine = line
+
+            if search(" as .+", line):
+                newestLine = line.split(" as ")[1]
+                if search(" with .+", newestLine):
+                    newestLine = newestLine.split(" with ")[0]
+                newestLine = outPath + "/" + hellparser.clean("[]%", newestLine)
+
+            if newestLine:
+                isFile = Path(newestLine).is_file()
+            else:
+                isFile = Path(
+                    outPath + "/" + hellparser.clean("[]%", newestLine)
+                ).is_file()
+
+            if isFile:
                 continue
 
             # Check if there's a properly formed `with` statement

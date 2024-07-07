@@ -126,9 +126,6 @@ def main():
         removeTemp=arguments.remove_temp,
     )
 
-    dirtyWad = findall(r"\[.*\]", file)[0]
-    dirtyConfig = findall(r"\{.*\}", file)
-
     # Clean the strings
     lines = hellparser.flatASS(lines)
     file = "\n".join(lines)
@@ -141,7 +138,8 @@ def main():
     else:
         config = ""
 
-    mods = hellparser.getMods([dirtyWad, dirtyConfig], noComments)
+    print(config)
+    mods = hellparser.getMods([wad, config], noComments)
     cleanMods = []
     for mod in mods:
         cleanMods.append(hellparser.parseURL(mod))
@@ -157,11 +155,8 @@ def main():
     else:
         configCommand = ""
 
-    logging.info(
-        "The hell file is at "
-        f"`{hellparser.getFilepath(arguments.filename.name)}"
-        f"/{arguments.filename.name}`"
-    )
+    fileName = arguments.filename.name
+    logging.info("The hell file is at " f"`{fileName}`")
 
     if wad:
         logging.info(f"The wad is `{wad}`")
