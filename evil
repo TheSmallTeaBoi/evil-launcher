@@ -102,7 +102,7 @@ def main():
     cleanLines = split("\n", cleanFile)
 
     comments = hellparser.getComments(lines)
-    noComments = copy(cleanLines)
+    noComments = copy(lines)
     for comment in comments:
         for line in cleanLines:
             if line == comment:
@@ -117,6 +117,9 @@ def main():
         removeTemp=arguments.remove_temp,
     )
 
+    dirtyWad = findall(r"\[.*\]", file)[0]
+    dirtyConfig = findall(r"\{.*\}", file)
+
     # Clean the strings
     lines = hellparser.flatASS(lines)
     file = "\n".join(lines)
@@ -129,7 +132,13 @@ def main():
     else:
         config = ""
 
-    mods = hellparser.getMods([wad, config], noComments, filePath)
+    mods = hellparser.getMods([dirtyWad, dirtyConfig], noComments, filePath)
+    cleanMods = []
+    for mod in mods:
+        cleanMods.append(hellparser.parseURL(mod))
+    # mods = '"'.join(cleanMods)
+    print(filePath)
+    mods = hellparser.listToString(cleanMods, filePath)
     mods = hellparser.clean("%", mods)
 
     # Clean from `[]` and `%`

@@ -54,16 +54,17 @@ def clean(filter, string):
 
 def getMods(filter, dirtyList, filePath):
     cleanMods = []
-    mods = []
+
+    for item in filter:
+        dirtyList = sanitize(item, dirtyList)
 
     for mod in dirtyList:
         mod = mod.replace("./", "")
         cleanMods.append(mod)
 
-    mods = cleanMods
-    mods = sanitize("", mods)
-    mods = listToString(mods, filePath)
-    return mods
+    cleanMods = sanitize("", cleanMods)
+    # cleanMods = listToString(cleanMods, filePath)
+    return cleanMods
 
 
 def getFilepath(file):
