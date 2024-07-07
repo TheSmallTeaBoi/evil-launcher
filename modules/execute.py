@@ -16,7 +16,7 @@ def execute(system_command, **kwargs):
     command = shlex.split(system_command)
 
     if os.name == "nt":
-        command = systemPrefix + [command[0] + ".exe"] + command[1:]
+        command = [command[0] + ".exe"] + command[1:]
 
     logging.info(f"Running command\n{command}")
     popen = subprocess.Popen(
