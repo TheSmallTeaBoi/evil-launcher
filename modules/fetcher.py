@@ -54,7 +54,7 @@ class Fetcher:
 
     def fetch(self, file, url, checksum="", algo=""):
         filePath = path.dirname(file)
-        logging.info(f"Making folder {filePath}/")
+        logging.info(f"Making folder {filePath}")
         makedirs(filePath, exist_ok=True)
         logging.info(f"Downloading {file}")
         execute(f"wget -c -O '{file}' '{url}'")
@@ -65,7 +65,7 @@ class Fetcher:
     def fetchAndExtract(self, link, outPath, removeTemp=False, checksum="", algo=""):
         # generate hash for temp file name
         tempDir = TemporaryDirectory().name
-        funnyName = tempDir + "/" + hashlib.sha256(link.encode("utf-8")).hexdigest()
+        funnyName = path.join(tempDir, hashlib.sha256(link.encode("utf-8")).hexdigest())
 
         self.fetch(funnyName, link, checksum, algo)
 
