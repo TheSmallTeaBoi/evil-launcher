@@ -25,7 +25,6 @@ class Fetcher:
         else:
             logging.error(f"Invalid algorithm name: {algorithm}. Removing file")
             remove(file)
-            # execute(f"rm {file}")
             exit()
         with open(file, "rb") as f:
             while True:
@@ -67,7 +66,7 @@ class Fetcher:
         tempDir = TemporaryDirectory().name
         funnyName = path.join(tempDir, hashlib.sha256(link.encode("utf-8")).hexdigest())
 
-        self.fetch(funnyName, link, checksum, algo)
+        self.fetch(path.normpath(funnyName), link, checksum, algo)
 
         splitDir = split(r"%%.*%%", outPath)
         outPath = splitDir[0] + search(r"%%(.*)%%", outPath).group(1)

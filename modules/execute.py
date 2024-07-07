@@ -10,8 +10,6 @@ def execute(system_command, **kwargs):
     Source: https://stackoverflow.com/a/4417735/2063031
     """
 
-    logging.info("Running: '%s'", system_command)
-
     logging.debug(f"System name is {os.name}")
 
     command = shlex.split(system_command)
