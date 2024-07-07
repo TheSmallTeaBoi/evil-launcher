@@ -1,11 +1,9 @@
 import hashlib
-from os import path, removedirs, remove, name
+from os import path, removedirs, remove, name, mkdirs
 from tempfile import TemporaryDirectory
 
 from re import search, split
 import logging
-import shlex
-from subprocess import Popen
 from modules import hellparser
 from modules.execute import execute
 from pathlib import Path
@@ -57,7 +55,7 @@ class Fetcher:
     def fetch(self, file, url, checksum="", algo=""):
         filePath = path.dirname(file)
         logging.info(f"Making folder {filePath}/")
-        execute(f"mkdir -p {filePath}/")
+        mkdirs(filePath, exists_ok=True)
         logging.info(f"Downloading {file}")
         execute(f"wget -c -O '{file}' '{url}'")
         if checksum:
