@@ -11,6 +11,8 @@ def execute(system_command, **kwargs):
     """
     logging.info("Running: '%s'", system_command)
 
+    logging.debug(f"System name is {os.name}")
+
     if os.name == "nt":
         systemPrefix = ["START"]
     else:
