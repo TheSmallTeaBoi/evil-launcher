@@ -1,5 +1,5 @@
 import hashlib
-from os import path, removedirs, remove, name, mkdirs
+from os import path, removedirs, remove, name, makedirs
 from tempfile import TemporaryDirectory
 
 from re import search, split
@@ -55,7 +55,7 @@ class Fetcher:
     def fetch(self, file, url, checksum="", algo=""):
         filePath = path.dirname(file)
         logging.info(f"Making folder {filePath}/")
-        mkdirs(filePath, exists_ok=True)
+        makedirs(filePath, exist_ok=True)
         logging.info(f"Downloading {file}")
         execute(f"wget -c -O '{file}' '{url}'")
         if checksum:
