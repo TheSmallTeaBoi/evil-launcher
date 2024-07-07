@@ -53,6 +53,7 @@ class Fetcher:
 
     def fetch(self, file, url, checksum="", algo=""):
         filePath = path.dirname(file)
+        print("filePath:", filePath)
         logging.info(f"Making folder {filePath}")
         makedirs(filePath, exist_ok=True)
         logging.info(f"Downloading {file}")
@@ -65,8 +66,6 @@ class Fetcher:
         # generate hash for temp file name
         tempDir = TemporaryDirectory().name
         funnyName = path.join(tempDir, hashlib.sha256(link.encode("utf-8")).hexdigest())
-        print(funnyName)
-        exit()
 
         self.fetch(funnyName, link, checksum, algo)
 
