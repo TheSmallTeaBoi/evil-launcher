@@ -1,7 +1,7 @@
 import hashlib
 from os import path
 
-from re import search, split, compile
+from re import search, split, compile, match, IGNORECASE
 import logging
 from modules import hellparser
 from modules.execute import execute
@@ -39,6 +39,13 @@ class Fetcher:
             logging.error(f"Expected: {checksum}")
             execute(f"rm {file}")
             exit()
+
+    def checkURI(self, uri):
+        regex = compile(
+            r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)",
+            IGNORECASE,
+        )
+        return match(regex, uri) is not None
 
     def fetch(self, file, url, checksum="", algo=""):
         filePath = path.dirname(file)
@@ -88,6 +95,8 @@ class Fetcher:
             if search(" as .+", line):
                 line = line.split(" as ")
                 url = line[0]
+                if not self.checkURI(url):
+                    logging.warn(f"Possibly not a URL: {url}")
                 filePath = f"{outPath}/{line[1]}"
                 if dryRun:
                     logging.info(

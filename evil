@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from re import split, findall
-from subprocess import check_output
 from argparse import ArgumentParser, FileType, REMAINDER
 from random import choice
 from sys import argv
@@ -136,8 +135,6 @@ def main():
     cleanMods = []
     for mod in mods:
         cleanMods.append(hellparser.parseURL(mod))
-    # mods = '"'.join(cleanMods)
-    print(filePath)
     mods = hellparser.listToString(cleanMods, filePath)
     mods = hellparser.clean("%", mods)
 
