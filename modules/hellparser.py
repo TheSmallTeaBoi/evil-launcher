@@ -1,5 +1,5 @@
 from os import path
-from re import findall, search, split
+from re import search, split
 
 
 def readFile(file):
@@ -25,7 +25,7 @@ def flatASS(lines):
 
 
 def parseURL(line):
-    lineDict = {"wad": "[", "config": "{", "mod": ""}
+    lineDict = {"wad": ["[", "]"], "config": ["{", "}"], "mod": ["", ""]}
     lineType = "mod"
     if line[0] == "[":
         lineType = "wad"
@@ -36,12 +36,9 @@ def parseURL(line):
         line = split(" as ", line)[1]
     if " with " in line:
         line = split(" with ", line)[0]
-        if lineType == "wad":
-            line += "]"
-        if lineType == "config":
-            line += "}"
+        line += lineDict[lineType][1]
 
-    line = lineDict[lineType] + split(" as ", line)[0]
+    line = lineDict[lineType][0] + split(" as ", line)[0]
     return line
 
 
@@ -52,7 +49,7 @@ def clean(filter, string):
     return string
 
 
-def getMods(filter, dirtyList, filePath):
+def getMods(filter, dirtyList):
     cleanMods = []
 
     for item in filter:
@@ -63,7 +60,6 @@ def getMods(filter, dirtyList, filePath):
         cleanMods.append(mod)
 
     cleanMods = sanitize("", cleanMods)
-    # cleanMods = listToString(cleanMods, filePath)
     return cleanMods
 
 

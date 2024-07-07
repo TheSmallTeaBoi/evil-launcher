@@ -23,7 +23,7 @@ def flatten(xss):
     return [x for xs in xss for x in xs]
 
 
-def main():
+def parseArgs():
 
     quitMessage = [
         "Please don't leave, there's more demons to toast!",
@@ -59,6 +59,11 @@ def main():
         help="Display version and exit",
         version=f"Evil v{version}",
     )
+
+    argParser.add_argument(
+        "-n", "--no-launch", action="store_true", help="Only fetch, do not run `gzdoom`"
+    )
+
     argParser.add_argument("extraFlags", nargs=REMAINDER)
 
     loggingArg = argParser.add_mutually_exclusive_group()
@@ -69,7 +74,12 @@ def main():
         "-V", "--verbose", action="store_true", help="Write log file (evil.log)"
     )
 
-    arguments = argParser.parse_args()
+    return argParser.parse_args()
+
+
+def main():
+
+    arguments = parseArgs()
 
     arguments.filetext = readArgumentFile(arguments.filename)
 
@@ -131,7 +141,7 @@ def main():
     else:
         config = ""
 
-    mods = hellparser.getMods([dirtyWad, dirtyConfig], noComments, filePath)
+    mods = hellparser.getMods([dirtyWad, dirtyConfig], noComments)
     cleanMods = []
     for mod in mods:
         cleanMods.append(hellparser.parseURL(mod))
@@ -180,7 +190,7 @@ def main():
         """
     )
 
-    if not arguments.dry_run:
+    if not arguments.dry_run and not arguments.no_launch:
         execute(command)
 
 
