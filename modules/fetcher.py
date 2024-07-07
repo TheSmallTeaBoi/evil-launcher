@@ -1,5 +1,5 @@
 import hashlib
-from os import path, removedirs
+from os import path, removedirs, remove
 from tempfile import TemporaryDirectory
 
 from re import search, split
@@ -26,7 +26,8 @@ class Fetcher:
             algo = self.checksumAlgos[algorithm]()
         else:
             logging.error(f"Invalid algorithm name: {algorithm}. Removing file")
-            execute(f"rm {file}")
+            remove(file)
+            # execute(f"rm {file}")
             exit()
         with open(file, "rb") as f:
             while True:
@@ -45,7 +46,7 @@ class Fetcher:
             exit()
 
     def checkURI(self, uri):
-        popen = Popen(shlex.split(f"wget -q --spider {uri}"), universal_newlines=True)
+        popen = execute(f"wget -q --spider {uri}")
         return_code = popen.wait()
         if return_code != 0:
             logging.error("Invalid URL or can't fetch:")
