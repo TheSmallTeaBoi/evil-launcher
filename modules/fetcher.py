@@ -40,16 +40,16 @@ class Fetcher:
             logging.error("Checksums don't match. Removing file.")
             logging.error(f"Got: {algo.hexdigest()}")
             logging.error(f"Expected: {checksum}")
-            execute(f"rm {file}")
+            remove(file)
             exit()
 
     def checkURI(self, uri):
         popen = execute(f"wget -q --spider {uri}")
-        return_code = popen.wait()
-        if return_code != 0:
-            logging.error("Invalid URL or can't fetch:")
-            logging.error("    " + uri)
-            exit()
+        # return_code = popen.wait()
+        # if return_code != 0:
+        #     logging.error("Invalid URL or can't fetch:")
+        #     logging.error("    " + uri)
+        #     exit()
         return True
 
     def fetch(self, file, url, checksum="", algo=""):

@@ -4,6 +4,7 @@ from pathlib import Path
 from re import split, findall
 from argparse import ArgumentParser, FileType, REMAINDER
 from random import choice
+import subprocess
 from sys import argv
 from copy import copy
 import logging

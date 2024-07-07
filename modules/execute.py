@@ -30,7 +30,8 @@ def execute(system_command, **kwargs):
         **kwargs,
     )
 
-    if not isWindows:
+    if False:
+        popen.communicate()
         for stdout_line in iter(popen.stdout.readline, ""):
             logging.debug(stdout_line.strip())
         popen.stdout.close()
