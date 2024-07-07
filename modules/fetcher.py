@@ -79,7 +79,6 @@ class Fetcher:
         checksum, algo = "", ""
         lineNum = 0
         for line in cleanLine:
-            print(line)
             lineNum += 1
             logging.debug(f"fetchMissing: {lineNum}. {line}")
 
@@ -95,9 +94,6 @@ class Fetcher:
                 isFile = Path(ass).is_file()
             else:
                 isFile = False
-
-            print(line)
-            print(ass)
 
             if isFile:
                 continue
@@ -136,7 +132,7 @@ class Fetcher:
                             algo=algo,
                         )
                     else:
-                        logging.info(f"No match: {line[0]}{line[1]}")
+                        logging.info(f"Not extracting: {line[0]}{line[1]}")
                         self.fetch(url=url, file=filePath, checksum=checksum, algo=algo)
             elif " as " in line or " as" in line:
                 logging.error(f"Syntax error at line {lineNum} (as what?)")
