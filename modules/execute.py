@@ -13,13 +13,9 @@ def execute(system_command, **kwargs):
 
     logging.debug(f"System name is {os.name}")
 
-    if os.name == "nt":
-        systemPrefix = ["START"]
-    else:
-        systemPrefix = None
-
     command = shlex.split(system_command)
-    if systemPrefix:
+
+    if os.name == "nt":
         command = systemPrefix + [command[0] + ".exe"] + command[1:]
 
     logging.info(f"Running command\n{command}")
