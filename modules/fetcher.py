@@ -1,5 +1,6 @@
 import hashlib
-from os import path
+from os import path, removedirs
+from tempfile import TemporaryDirectory
 
 from re import search, split
 import logging
@@ -63,8 +64,9 @@ class Fetcher:
             self.checkSum(file, checksum, algo)
 
     def fetchAndExtract(self, link, outPath, removeTemp=False, checksum="", algo=""):
-        # generate change for temp file name
-        funnyName = "/tmp/" + hashlib.sha256(link.encode("utf-8")).hexdigest()
+        # generate hash for temp file name
+        tempDir = TemporaryDirectory().name
+        funnyName = tempDir + "/" + hashlib.sha256(link.encode("utf-8")).hexdigest()
 
         self.fetch(funnyName, link, checksum, algo)
 
@@ -72,8 +74,8 @@ class Fetcher:
         outPath = splitDir[0] + search(r"%%(.*)%%", outPath).group(1)
         execute(f"unar -D -o {outPath} {funnyName}")
         if removeTemp:
-            logging.warn(f"Deleting temp file `{funnyName}`")
-            execute(f"rm {funnyName}")
+            logging.warn(f"Deleting temp dir `{tempDir}`")
+            removedirs(tempDir)
 
     def fetchMissing(self, cleanLine, outPath, removeTemp=False, dryRun=False):
         checksum, algo = "", ""

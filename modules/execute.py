@@ -1,6 +1,7 @@
 import logging
 import subprocess
 import shlex
+import os
 
 
 def execute(system_command, **kwargs):
@@ -9,15 +10,27 @@ def execute(system_command, **kwargs):
     Source: https://stackoverflow.com/a/4417735/2063031
     """
     logging.info("Running: '%s'", system_command)
+
+    if os.name == "nt":
+        systemPrefix = ["START"]
+    else:
+        systemPrefix = None
+
+    command = shlex.split(system_command)
+    if systemPrefix:
+        command = systemPrefix + [command[0] + ".exe"] + command[1:]
+
     popen = subprocess.Popen(
-        shlex.split(system_command),
+        command,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         universal_newlines=True,
         **kwargs,
     )
+
     for stdout_line in iter(popen.stdout.readline, ""):
         logging.debug(stdout_line.strip())
+
     popen.stdout.close()
     return_code = popen.wait()
     if return_code:
