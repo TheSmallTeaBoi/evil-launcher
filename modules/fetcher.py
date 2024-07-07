@@ -65,8 +65,10 @@ class Fetcher:
         # generate hash for temp file name
         tempDir = TemporaryDirectory().name
         funnyName = path.join(tempDir, hashlib.sha256(link.encode("utf-8")).hexdigest())
+        print(funnyName)
+        exit()
 
-        self.fetch(path.normpath(funnyName), link, checksum, algo)
+        self.fetch(funnyName, link, checksum, algo)
 
         splitDir = split(r"%%.*%%", outPath)
         outPath = splitDir[0] + search(r"%%(.*)%%", outPath).group(1)
