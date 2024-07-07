@@ -9,6 +9,7 @@ def execute(system_command, **kwargs):
 
     Source: https://stackoverflow.com/a/4417735/2063031
     """
+
     logging.info("Running: '%s'", system_command)
 
     logging.debug(f"System name is {os.name}")
@@ -29,11 +30,10 @@ def execute(system_command, **kwargs):
         **kwargs,
     )
 
-    for stdout_line in iter(popen.stdout.readline, ""):
-        logging.debug(stdout_line.strip())
-
-    popen.stdout.close()
     if not isWindows:
+        for stdout_line in iter(popen.stdout.readline, ""):
+            logging.debug(stdout_line.strip())
+        popen.stdout.close()
         return_code = popen.wait()
         if return_code:
             logging.error(f"`{system_command}` exited with code {return_code}")

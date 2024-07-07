@@ -1,5 +1,5 @@
 import hashlib
-from os import path, removedirs, remove
+from os import path, removedirs, remove, name
 from tempfile import TemporaryDirectory
 
 from re import search, split
@@ -121,7 +121,8 @@ class Fetcher:
             if search(" as .+", line):
                 line = line.split(" as ")
                 url = line[0]
-                self.checkURI(url)
+                if name != "nt":
+                    self.checkURI(url)
                 filePath = f"{outPath}/{line[1]}"
                 if dryRun:
                     logging.info(
