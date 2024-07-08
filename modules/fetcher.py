@@ -46,12 +46,11 @@ class Fetcher:
             exit()
 
     def checkURI(self, uri):
-        execute(f"wget -q --spider {uri}")
-        # return_code = popen.wait()
-        # if return_code != 0:
-        #     logging.error("Invalid URL or can't fetch:")
-        #     logging.error("    " + uri)
-        #     exit()
+        code = request.urlopen(uri).getcode()
+        if code != 200:
+            logging.error("Invalid URL or can't fetch:")
+            logging.error("    " + uri)
+            exit()
         return True
 
     def fetch(self, file, url, checksum="", algo=""):
@@ -100,7 +99,7 @@ class Fetcher:
                 newestLine = line.split(" as ")[1]
                 if search(" with .+", newestLine):
                     newestLine = newestLine.split(" with ")[0]
-                newestLine = outPath + "/" + hellparser.clean("[]%", newestLine)
+                newestLine = path.join(outPath + hellparser.clean("[]%", newestLine))
 
             if newestLine:
                 isFile = Path(newestLine).is_file()
