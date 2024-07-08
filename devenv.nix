@@ -3,7 +3,7 @@
   env.GREET = "devenv";
 
   # https://devenv.sh/packages/
-  packages = with pkgs; [gzdoom unar wget curl];
+  packages = with pkgs; [gzdoom unar wget];
 
   enterShell = ''
   '';
