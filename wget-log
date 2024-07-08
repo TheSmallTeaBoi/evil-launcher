@@ -1,0 +1,11 @@
+Resolving ‘wget-log’... 20.201.28.151
+Connecting to github.com (github.com)|20.201.28.151|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://objects.githubusercontent.com/github-production-release-asset-2e65be/4576719/3830c336-8fae-4454-9d3c-12a1e0ac6c0d?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20240708%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240708T001546Z&X-Amz-Expires=300&X-Amz-Signature=47b822bbd452ef7f6d45654d1ed853dd9f7867c5df4df8b270903d97a79c7473&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=4576719&response-content-disposition=attachment%3B%20filename%3Dfreedoom-0.13.0.zip&response-content-type=application%2Foctet-stream [following]
+--2024-07-07 21:16:09--  https://objects.githubusercontent.com/github-production-release-asset-2e65be/4576719/3830c336-8fae-4454-9d3c-12a1e0ac6c0d?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20240708%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240708T001546Z&X-Amz-Expires=300&X-Amz-Signature=47b822bbd452ef7f6d45654d1ed853dd9f7867c5df4df8b270903d97a79c7473&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=4576719&response-content-disposition=attachment%3B%20filename%3Dfreedoom-0.13.0.zip&response-content-type=application%2Foctet-stream
+Resolving objects.githubusercontent.com (objects.githubusercontent.com)... 185.199.108.133, 185.199.111.133, 185.199.109.133, ...
+Connecting to objects.githubusercontent.com (objects.githubusercontent.com)|185.199.108.133|:443... connected.
+HTTP request sent, awaiting response... 416 Range Not Satisfiable
+
+    The file is already fully retrieved; nothing to do.
+

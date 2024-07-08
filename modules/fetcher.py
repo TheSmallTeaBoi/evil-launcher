@@ -1,6 +1,6 @@
 import hashlib
 from os import path, removedirs, remove, name, makedirs
-from tempfile import TemporaryDirectory
+from tempfile import TemporaryDirectory, gettempdir
 
 from re import search, split
 import logging
@@ -26,6 +26,7 @@ class Fetcher:
             logging.error(f"Invalid algorithm name: {algorithm}. Removing file")
             remove(file)
             exit()
+
         with open(file, "rb") as f:
             while True:
                 data = f.read(65536)
@@ -53,7 +54,6 @@ class Fetcher:
 
     def fetch(self, file, url, checksum="", algo=""):
         filePath = path.dirname(file)
-        print("filePath:", filePath)
         logging.info(f"Making folder {filePath}")
         makedirs(filePath, exist_ok=True)
         logging.info(f"Downloading {file}")
@@ -64,8 +64,10 @@ class Fetcher:
 
     def fetchAndExtract(self, link, outPath, removeTemp=False, checksum="", algo=""):
         # generate hash for temp file name
-        tempDir = TemporaryDirectory().name
+        tempDir = gettempdir()
         funnyName = path.join(tempDir, hashlib.sha256(link.encode("utf-8")).hexdigest())
+        print(tempDir)
+        print(funnyName)
 
         self.fetch(funnyName, link, checksum, algo)
 
