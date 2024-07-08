@@ -16,8 +16,6 @@ def execute(system_command, **kwargs):
 
     isWindows = os.name == "nt"
 
-    print(command)
-
     if isWindows:
         command = [command[0] + ".exe"] + command[1:]
 
@@ -33,7 +31,7 @@ def execute(system_command, **kwargs):
     # if False:
     for stdout_line in iter(popen.stdout.readline, ""):
         logging.debug(stdout_line.strip())
-    # popen.stdout.close()
+    popen.stdout.close()
     return_code = popen.wait()
     if return_code:
         logging.error(f"`{system_command}` exited with code {return_code}")
