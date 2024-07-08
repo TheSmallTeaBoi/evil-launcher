@@ -1,6 +1,7 @@
 import hashlib
 from os import path, removedirs, remove, name, makedirs
 from tempfile import TemporaryDirectory, gettempdir
+from urllib import request
 
 from re import search, split
 import logging
@@ -57,7 +58,8 @@ class Fetcher:
         logging.info(f"Making folder {filePath}")
         makedirs(filePath, exist_ok=True)
         logging.info(f"Downloading {file}")
-        execute(f"wget -o '{file}' '{url}'")
+        request.urlretrieve(url, file)
+        # execute(f"wget -o '{file}' '{url}'")
         if checksum:
             logging.info("Checking checksum")
             self.checkSum(file, checksum, algo)
