@@ -12,13 +12,14 @@ def execute(system_command, **kwargs):
 
     logging.debug(f"System name is {os.name}")
 
-    command = shlex.split(system_command)
     command = system_command.split(" ")
 
     isWindows = os.name == "nt"
 
     if isWindows:
         command = [command[0] + ".exe"] + command[1:]
+
+    command = " ".join(command)
 
     logging.info(f"Running command\n{command}")
     popen = subprocess.Popen(
