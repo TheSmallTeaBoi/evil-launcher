@@ -15,8 +15,9 @@ def execute(system_command, **kwargs):
     isWindows = os.name == "nt"
 
     if isWindows:
-        command = shlex.split(system_command, posix=False)
-        command = [command[0] + ".exe"] + command[1:]
+        command = system_command
+        # command = shlex.split(system_command, posix=False)
+        # command = [command[0] + ".exe"] + command[1:]
     else:
         command = shlex.split(system_command)
 
