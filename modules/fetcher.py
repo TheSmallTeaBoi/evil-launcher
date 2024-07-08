@@ -46,12 +46,14 @@ class Fetcher:
             exit()
 
     def checkURI(self, uri):
-        code = request.urlopen(uri).getcode()
-        if code != 200:
-            logging.error("Invalid URL or can't fetch:")
-            logging.error("    " + uri)
-            exit()
-        return True
+        response = request.Request(uri)
+        response.get_method = lambda: "HEAD"
+
+        try:
+            request.urlopen(response)
+            return True
+        except request.HTTPError:
+            return False
 
     def fetch(self, file, url, checksum="", algo=""):
         filePath = path.dirname(file)
@@ -99,16 +101,18 @@ class Fetcher:
                 newestLine = line.split(" as ")[1]
                 if search(" with .+", newestLine):
                     newestLine = newestLine.split(" with ")[0]
-                newestLine = path.join(outPath + hellparser.clean("[]%", newestLine))
+                newestLine = path.join(outPath, hellparser.clean("[]{}%", newestLine))
 
+            # Check if file already exists
             if newestLine:
                 isFile = Path(newestLine).is_file()
             else:
                 isFile = Path(
-                    outPath + "/" + hellparser.clean("[]%", newestLine)
+                    path.join(outPath, hellparser.clean("[]{}%", newestLine))
                 ).is_file()
 
             if isFile:
+                logging.info("File is already available, not downloading")
                 continue
 
             # Check if there's a properly formed `with` statement
@@ -125,9 +129,13 @@ class Fetcher:
             if search(" as .+", line):
                 line = line.split(" as ")
                 url = line[0]
-                if name != "nt":
-                    self.checkURI(url)
-                filePath = f"{outPath}/{line[1]}"
+
+                if not self.checkURI(url):
+                    logging.error("Invalid URL or can't fetch:")
+                    logging.error("    " + url)
+                    exit()
+
+                filePath = path.join(outPath, line[1])
                 if dryRun:
                     logging.info(
                         f"Found {url}, which would be downloaded to {filePath}"
