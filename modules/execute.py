@@ -16,6 +16,9 @@ def execute(system_command, **kwargs):
 
     isWindows = os.name == "nt"
 
+    print(command)
+    exit()
+
     if isWindows:
         command = [command[0] + ".exe"] + command[1:]
 
