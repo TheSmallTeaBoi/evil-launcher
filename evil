@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
+from os import path
 from pathlib import Path
+from posixpath import normpath
 from re import split, findall
 from argparse import ArgumentParser, FileType, REMAINDER
 from random import choice
@@ -148,10 +150,14 @@ def main():
     mods = hellparser.clean("%", mods)
 
     # Clean from `[]` and `%`
+    print(wad)
     wad = hellparser.clean("[]%", wad)
+    print(wad)
+    wad = path.normpath(wad)
 
     if config:
         config = hellparser.clean("{}%", config)
+        config = path.normpath(config)
         configCommand = f' -config "{filePath}/{config}"'
     else:
         configCommand = ""
@@ -178,7 +184,7 @@ def main():
 
     extraFlags = " " + " ".join(arguments.extraFlags)
 
-    command = f'gzdoom -iwad "{filePath}/{wad}"{configCommand}{modCommand}{extraFlags}'
+    command = f'gzdoom -iwad "{path.join(filePath, path.normpath(wad))}"{configCommand}{modCommand}{extraFlags}'
 
     logging.info(
         f"""The command {"would" if arguments.dry_run else "will"} be run as
