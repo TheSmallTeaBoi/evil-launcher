@@ -76,7 +76,7 @@ class Fetcher:
 
         print(funnyName)
 
-        execute(f"unar -D -o {outPath} {funnyName}")
+        execute(f"unar -D -o {Path(outPath)} {Path(funnyName)}")
         if removeTemp:
             logging.warn(f"Deleting temp dir `{tempDir}`")
             removedirs(tempDir)
@@ -135,7 +135,7 @@ class Fetcher:
                     if search(r"%%.*%%", filePath):
                         self.fetchAndExtract(
                             link=url,
-                            outPath=filePath,
+                            outPath=path.normpath(filePath),
                             removeTemp=removeTemp,
                             checksum=checksum,
                             algo=algo,
