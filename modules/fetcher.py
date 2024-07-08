@@ -76,9 +76,7 @@ class Fetcher:
 
         print(funnyName)
 
-        execute(
-            f"unar -D -o {outPath.encode('string_escape')} {funnyName.encode('string_escape')}"
-        )
+        execute(f"unar -D -o {repr(outPath)} {repr(funnyName)}")
         if removeTemp:
             logging.warn(f"Deleting temp dir `{tempDir}`")
             removedirs(tempDir)
