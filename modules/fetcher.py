@@ -58,7 +58,7 @@ class Fetcher:
         filePath = path.dirname(file)
         logging.info(f"Making folder {filePath}")
         makedirs(filePath, exist_ok=True)
-        logging.info(f"Downloading {file}")
+        logging.info(f"Downloading {url}")
         request.urlretrieve(url, file)
         if checksum:
             logging.info("Checking checksum")
