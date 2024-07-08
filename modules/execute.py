@@ -12,7 +12,7 @@ def execute(system_command, **kwargs):
 
     logging.debug(f"System name is {os.name}")
 
-    command = shlex.split(system_command)
+    command = shlex.split(system_command, posix=False)
 
     isWindows = os.name == "nt"
 
