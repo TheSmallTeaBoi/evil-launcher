@@ -1,4 +1,5 @@
 import hashlib
+from zipfile import ZipFile
 from os import path, removedirs, remove, name, makedirs
 from tempfile import TemporaryDirectory, gettempdir
 from urllib import request
@@ -59,7 +60,6 @@ class Fetcher:
         makedirs(filePath, exist_ok=True)
         logging.info(f"Downloading {file}")
         request.urlretrieve(url, file)
-        # execute(f"wget -o '{file}' '{url}'")
         if checksum:
             logging.info("Checking checksum")
             self.checkSum(file, checksum, algo)
@@ -76,7 +76,9 @@ class Fetcher:
             splitDir[0], path.normpath(search(r"%%(.*)%%", outPath).group(1))
         )
 
-        execute(f"unar -D -o {outPath} {funnyName}")
+        with ZipFile(funnyName, "r") as zip_ref:
+            zip_ref.extractall(outPath)
+        # execute(f"unar -D -o {outPath} {funnyName}")
         if removeTemp:
             logging.warn(f"Deleting temp dir `{tempDir}`")
             removedirs(tempDir)
