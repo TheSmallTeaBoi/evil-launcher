@@ -28,12 +28,11 @@ def execute(system_command, **kwargs):
         **kwargs,
     )
 
-    if False:
-        popen.communicate()
-        for stdout_line in iter(popen.stdout.readline, ""):
-            logging.debug(stdout_line.strip())
-        popen.stdout.close()
-        return_code = popen.wait()
-        if return_code:
-            logging.error(f"`{system_command}` exited with code {return_code}")
-            exit()
+    # if False:
+    for stdout_line in iter(popen.stdout.readline, ""):
+        logging.debug(stdout_line.strip())
+    # popen.stdout.close()
+    return_code = popen.wait()
+    if return_code:
+        logging.error(f"`{system_command}` exited with code {return_code}")
+        exit()
