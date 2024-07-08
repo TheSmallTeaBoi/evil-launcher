@@ -1,4 +1,4 @@
-from os import path
+import os
 from re import search, split
 
 
@@ -62,7 +62,7 @@ def getMods(filter, dirtyList):
 
 
 def getFilepath(file):
-    osPath = path.dirname(path.abspath(file))
+    osPath = os.path.dirname(os.path.abspath(file))
     if osPath == ".":
         osPath = ""
     return osPath
@@ -79,6 +79,6 @@ def getComments(lines):
 def listToString(inputList, path):
     finalList = []
     for item in inputList:
-        finalList.append('"' + path.join(path, path.normpath(item)) + '"')
+        finalList.append('"' + os.path.join(path, os.path.normpath(item)) + '"')
     outputString = " ".join(finalList)
     return outputString
