@@ -74,8 +74,6 @@ class Fetcher:
             splitDir[0], path.normpath(search(r"%%(.*)%%", outPath).group(1))
         )
 
-        funnyName = funnyName.replace("\\", "/")
-
         execute(f"unar -D -o {outPath} {funnyName}")
         if removeTemp:
             logging.warn(f"Deleting temp dir `{tempDir}`")
