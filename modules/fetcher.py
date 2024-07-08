@@ -44,7 +44,7 @@ class Fetcher:
             exit()
 
     def checkURI(self, uri):
-        popen = execute(f"wget -q --spider {uri}")
+        execute(f"wget -q --spider {uri}")
         # return_code = popen.wait()
         # if return_code != 0:
         #     logging.error("Invalid URL or can't fetch:")
@@ -72,7 +72,9 @@ class Fetcher:
         self.fetch(funnyName, link, checksum, algo)
 
         splitDir = split(r"%%.*%%", outPath)
-        outPath = splitDir[0] + search(r"%%(.*)%%", outPath).group(1)
+        outPath = path.join(
+            splitDir[0], path.normpath(search(r"%%(.*)%%", outPath).group(1))
+        )
         execute(f"unar -D -o {outPath} {funnyName}")
         if removeTemp:
             logging.warn(f"Deleting temp dir `{tempDir}`")
