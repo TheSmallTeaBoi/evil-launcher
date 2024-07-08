@@ -79,6 +79,6 @@ def getComments(lines):
 def listToString(inputList, path):
     finalList = []
     for item in inputList:
-        finalList.append('"' + path + "/" + item + '"')
+        finalList.append('"' + path.join(path, path.normpath(item)) + '"')
     outputString = " ".join(finalList)
     return outputString
