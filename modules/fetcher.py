@@ -66,8 +66,6 @@ class Fetcher:
         # generate hash for temp file name
         tempDir = gettempdir()
         funnyName = path.join(tempDir, hashlib.sha256(link.encode("utf-8")).hexdigest())
-        print(tempDir)
-        print(funnyName)
 
         self.fetch(funnyName, link, checksum, algo)
 
@@ -75,6 +73,9 @@ class Fetcher:
         outPath = path.join(
             splitDir[0], path.normpath(search(r"%%(.*)%%", outPath).group(1))
         )
+
+        print(funnyName)
+
         execute(f"unar -D -o {outPath} {funnyName}")
         if removeTemp:
             logging.warn(f"Deleting temp dir `{tempDir}`")
