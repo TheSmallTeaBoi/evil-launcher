@@ -57,7 +57,7 @@ class Fetcher:
         logging.info(f"Making folder {filePath}")
         makedirs(filePath, exist_ok=True)
         logging.info(f"Downloading {file}")
-        execute(f"curl -o '{file}' '{url}'")
+        execute(f"wget -o '{file}' '{url}'")
         if checksum:
             logging.info("Checking checksum")
             self.checkSum(file, checksum, algo)
