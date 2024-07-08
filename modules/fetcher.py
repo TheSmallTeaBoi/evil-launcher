@@ -76,7 +76,6 @@ class Fetcher:
 
         funnyName = funnyName.replace("\\", "/")
 
-        execute(f"echo {funnyName}")
         execute(f"unar -D -o {outPath} {funnyName}")
         if removeTemp:
             logging.warn(f"Deleting temp dir `{tempDir}`")
