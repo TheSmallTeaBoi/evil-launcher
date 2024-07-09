@@ -8,8 +8,6 @@ Evil launcher is a CLI launcher for classic doom mod packs
 
 - Python
 - gzdoom
-- wget
-- unar
 
 ## Usage
 
